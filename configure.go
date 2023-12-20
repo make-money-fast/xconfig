@@ -51,6 +51,9 @@ func assignDefaultValueToField(val reflect.Value, typ reflect.Type) error {
 		if !fieldValue.CanSet() {
 			continue
 		}
+		if !fieldValue.IsZero() {
+			continue
+		}
 		value := strings.TrimSpace(typ.Tag.Get("default"))
 		if value == "" {
 			continue
