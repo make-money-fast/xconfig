@@ -3,11 +3,12 @@ package xconfig
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/ghodss/yaml"
 	"os"
 	"reflect"
 	"strconv"
 	"strings"
+
+	"github.com/ghodss/yaml"
 )
 
 func ParseFromFile(file string, out interface{}) error {
@@ -36,6 +37,10 @@ func assignDefaultValueToField(val reflect.Value, typ reflect.Type) error {
 	for i := 0; i < typ.NumField(); i++ {
 		field := val.Field(i)
 		typ := typ.Field(i)
+		ignore := typ.Tag.Get("json") == "-"
+		if ignore {
+			continue
+		}
 		fieldValue := reflect.Indirect(field)
 		if field.Kind() == reflect.Ptr && field.IsNil() {
 			fieldValue = reflect.New(field.Type().Elem())
